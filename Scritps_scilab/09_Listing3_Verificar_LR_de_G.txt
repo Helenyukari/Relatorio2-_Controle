@@ -1,0 +1,10 @@
+// [LISTING 3] Código em Scilab para verificar o LR de G
+// (Seção IV.B - Projeto do Compensador via Lugar das Raízes)
+
+// Definir variável complexa
+s = %s;
+
+// 1. Planta Original
+den_g = s^6 + 48*s^5 + 817*s^4 + 5720*s^3 + 15075*s^2 + 27000*s + 16875;
+G = syslin('c', 1, den_g);
+evans(G);

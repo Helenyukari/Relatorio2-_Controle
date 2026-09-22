@@ -1,0 +1,84 @@
+// [SCRIPT] Cálculos para Redução a 3ª Ordem via Polos Dominantes
+// (Seção III.B - Redução de Modelo)
+
+// === Calculos para reducao a 3a ordem via polos dominantes ===
+
+// --- Definindo variavel 's' e a planta G(s): ---
+
+// Define 's' como a variavel de polinomio
+s=%s;
+
+// Define o numerador e o denominador da planta g(s)
+num = s + 6;
+den = s^6 + 11*s^5 + 52*s^4 + 142*s^3 + 241*s^2 + 231*s + 90;
+
+// Define a planta g(s)
+G = syslin('c', num, den)
+
+//--- Calculo derivadas: ---
+// Calcula as derivadas G' e G'' usando 'derivat':
+
+G_ponto= derivat(G); // 1a Derivada
+G_dois_pontos= derivat(G_ponto); // 2a Derivada
+
+//--- Calculo de G(0), G'(0) e G''(0): ---
+// Substitui s por 0 em G e em cada uma das derivadas usando 'horner':
+
+G0 = horner(G, 0);
+d_G1 = horner(G_ponto, 0);
+d_G2 = horner(G_dois_pontos, 0);
+
+// --- Exibe os resultados de G(0) ; G'(0) ; G''(0) ---
+
+printf("G(0): %f\n", G0);
+printf("G''(0) (Primeira Derivada): %f\n", d_G1);
+printf("G''''(0) (Segunda Derivada): %f\n", d_G2);
+
+// --- Construindo Matriz para encontrar os respectivos coeficientes b1,b2, b3 ---
+
+// Definindo a unidade imaginaria
+j = %i;
+
+// --- Matriz reducao a 3a ordem (3x3) ---
+//Para aplicar (9.15 - slides) temos os seguintes passos:
+
+// 1. Definir os polos
+p1 = -1;
+p2 = -1 + 2*j;
+p3 = -1 - 2*j;
+
+// 2. Calcular cada termo e montar as linhas da matriz relacionada aos polos M_polos (3x3)
+
+// Linha 1: -1 / p^1
+L1 = [-1/p1, -1/p2, -1/p3];
+
+// Linha 2: -1 / p^2
+L2 = [-1/(p1^2), -1/(p2^2), -1/(p3^2)];
+
+// Linha 3: -2 / p^3 (o numerador e -k!, entao -2! = 2)
+L3 = [-2/(p1^3), -2/(p2^3), -2/(p3^3)];
+
+// 3. Concatenar as linhas na matriz_polos
+M_polos = [L1; L2; L3];
+disp("Matriz M_polos calculada:");
+
+disp(M_polos);
+
+// 4. Montar a matriz com G(0), G'(0) e G''(0)
+M_G=[G0;d_G1;d_G2];
+
+// 5. Calcular matriz de coeficientes (b1,b2,b3)
+Matriz_B = M_polos \ M_G;
+
+disp("Coeficientes [b1; b2; b3]:");
+disp(Matriz_B);
+
+// --- Montar a funcao reduzida somando as fracoes parciais ---
+G_ordem3 = Matriz_B(1)/(s - p1) + Matriz_B(2)/(s - p2) + Matriz_B(3)/(s - p3);
+
+// Limpar residuos numericos (como + 0.0000i) gerados por arredondamento
+Gr_ordem3 = clean(G_ordem3);
+
+// --- G final reduzido a 3a ordem (aplicando 9.13 - slides) ---
+disp("Funcao de Transferencia Reduzida de 3a Ordem:");
+disp(Gr_ordem3);

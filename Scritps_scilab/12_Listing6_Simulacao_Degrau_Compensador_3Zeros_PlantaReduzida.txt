@@ -1,0 +1,33 @@
+// [LISTING 6] Simulação com degrau no compensador de 3 zeros (Planta Reduzida)
+// (Seção IV.D - Simulação Comparativa)
+
+clc; clear; clf();
+
+// 1. Variável de Laplace
+s = %s;
+
+// 2. Planta Reduzida por Truncação Direta (3 Ordem)
+// Preserva a constante 3375 (referente a 15^3) no denominador
+G_red = syslin('c', 1, 3375 * (s^3 + 3*s^2 + 7*s + 5));
+
+// 3. Estrutura Base do Compensador (3 Zeros, 3 Polos e Integrador)
+zc = 3;
+pc = 30;
+C_base = syslin('c', (s + zc)^3, s * (s + pc)^3);
+
+// 5. Aplicação do Ganho Calculado e Fecho da Malha
+K = 7.48e8;
+C_final = K * C_base;
+
+// A operação /. 1 cria a Função de Transferência em Malha Fechada (realimentação unitária)
+MalhaFechada = (C_final * G_red) /. 1;
+
+// 6. Simulação da Resposta ao Degrau
+t = 0:0.01:20;
+y = csim('step', t, MalhaFechada);
+
+// 7. Plotagem da Resposta ao Degrau
+scf(1);
+plot(t, y, 'b-', 'LineWidth', 2);
+xgrid;
+xtitle('Resposta ao Degrau Unitário (Planta Reduzida + Compensador de 3 Zeros)', 'Tempo (s)', 'Amplitude');

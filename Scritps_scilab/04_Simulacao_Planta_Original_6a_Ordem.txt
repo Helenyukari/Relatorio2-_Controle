@@ -1,0 +1,50 @@
+// [SCRIPT] Simulação da Planta Original de 6ª Ordem
+// (Seção III.A - Redução de Modelo - Respostas a degrau, rampa e parábola)
+
+// === Simulacao da Planta Original de 6a Ordem ===
+
+// 1. Definindo a variavel 's' e a planta original G(s) diretamente
+s = %s;
+G = syslin('c', s+6, s^6 + 11*s^5 + 52*s^4 + 142*s^3 + 241*s^2 + 231*s + 90);
+
+// 2. Definindo o vetor de tempo usando linspace (0 a 25 segundos, 2501 pontos)
+t = linspace(0, 25, 2501);
+
+// 3. Simulando a resposta continua da planta para cada entrada
+// i = 0: Entrada em degrau (u = 1), usando a sintaxe nativa 'step'
+y0 = csim('step', t, G);
+
+// i = 1: Entrada em rampa (u = t), usando o proprio vetor t
+y1 = csim(t, t, G);
+
+// i = 2: Entrada em parabola (u = t^2), usando o vetor t ao quadrado
+y2 = csim(t.^2, t, G);
+
+// 4. Plotando os resultados em janelas separadas
+
+// --- Grafico 1: Degrau ---
+figure(1);
+clf();
+plot(t, y0, 'b', 'LineWidth', 2);
+title('Resposta ao Degrau (i = 0, u = 1)', 'fontsize', 3);
+xlabel('Tempo (s)');
+ylabel('Amplitude y(t)');
+xgrid();
+
+// --- Grafico 2: Rampa ---
+figure(2);
+clf();
+plot(t, y1, 'r', 'LineWidth', 2);
+title('Resposta a Rampa (i = 1, u = t)', 'fontsize', 3);
+xlabel('Tempo (s)');
+ylabel('Amplitude y(t)');
+xgrid();
+
+// --- Grafico 3: Parabola ---
+figure(3);
+clf();
+plot(t, y2, 'g', 'LineWidth', 2);
+title('Resposta a Parabola (i = 2, u = t^2)', 'fontsize', 3);
+xlabel('Tempo (s)');
+ylabel('Amplitude y(t)');
+xgrid();

@@ -1,0 +1,20 @@
+// [SCRIPT] Gráficos das Vazões e Diferença de Altura
+// (Seção II.C - Sistema de Tanques Comunicantes - Plotagem via console)
+
+// Gráfico 1: Diferença de altura
+figure(1);
+plot(dif_altura.time, dif_altura.values);
+title("Diferença das alturas nos níveis dos tanques");
+f1 = gcf();
+f1.background = 8;
+xlabel("Tempo (s)");
+ylabel("Diferença de Nível (m)");
+
+// Gráfico 2: Vazões q1 e q2
+figure(2);
+plot(vazoes.time, vazoes.values);
+title("Comportamento das Vazões (q1 e q2)");
+f1 = gcf();
+f1.background = 8;
+xlabel("Tempo (s)");
+ylabel("Vazão ( m /s)");

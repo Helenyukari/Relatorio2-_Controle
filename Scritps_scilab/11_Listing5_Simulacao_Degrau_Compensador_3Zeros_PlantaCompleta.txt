@@ -1,0 +1,31 @@
+// [LISTING 5] Simulação com degrau no compensador de 3 zeros (Planta Completa)
+// (Seção IV.B - Projeto do Compensador via Lugar das Raízes)
+
+clc;
+clear;
+clf();
+
+// 1. Variável de Laplace e Planta Original
+s = %s;
+den_g = s^6 + 48*s^5 + 817*s^4 + 5720*s^3 + 15075*s^2 + 27000*s + 16875;
+G = syslin('c', 1, den_g);
+
+// 2. Definição do Compensador Final com Ganho
+K = 1.5e7;
+zc = 3;
+pc = 30;
+C = syslin('c', K * (s + zc)^3, s * (s + pc)^3);
+
+// 3. Função de Transferência de Malha Fechada
+MalhaFechada = (C * G) /. 1;
+
+// 4. Simulação Temporal
+t = 0:0.01:10;
+y = csim('step', t, MalhaFechada);
+
+// 5. Plotagem do Gráfico
+plot(t, y, 'b-', 'LineWidth', 2);
+plot(t, ones(1, length(t)), 'r--');
+xgrid(1);
+xtitle('Resposta ao Degrau Unitário (Compensador com Múltiplos Zeros)', 'Tempo (s)', 'Amplitude');
+legend(['Resposta do Sistema'; 'Referência (Degrau)'], 4);

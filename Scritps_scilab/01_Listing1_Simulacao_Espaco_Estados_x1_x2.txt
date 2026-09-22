@@ -1,0 +1,34 @@
+// [LISTING 1] Código em Scilab para simulação do espaço de estados
+// (Seção I.B - Sistema Suspensão Automotiva - Simulação de x1 e x2)
+
+// --- 1. Montando as Matrizes do Espaço de Estados
+// Valor de b = 240
+A = [0, -0.25;
+     1, -0.6];
+
+B = [0.25;
+     0.6];
+
+C = [0, 1]; // y = x2
+
+D = 0;
+
+// --- 2. Criando o Sistema Contínuo no Scilab ---
+sys = syslin('c', A, B, C, D);
+
+// --- 3. Definindo o Tempo de Simulação ---
+// Como w_n = 0.5 e zeta = 0.6, o tempo de acomodação (5%) é 10s.
+// Vamos simular de 0 a 25 segundos com passos de 0.05s
+t = 0:0.05:25;
+
+// --- 5. Simulando a Resposta ao Degrau ---
+// A função csim nos devolve a saída (y) e a matriz de estados (x_states)
+[y, x_states] = csim('step', t, sys);
+
+// --- 6. Plotando o Comportamento de x1 e x2 ---
+plot(t, x_states);
+xgrid;
+title('Comportamento das Variáveis de Estado x1 e x2', 'fontsize', 4);
+xlabel('Tempo (segundos)', 'fontsize', 3);
+ylabel('Amplitude', 'fontsize', 3);
+legend(['x1'; 'x2'], 1);

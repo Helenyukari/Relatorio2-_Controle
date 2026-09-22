@@ -1,0 +1,15 @@
+// [SCRIPT] Definição das Plantas Reduzidas (5ª, 4ª e 3ª ordens)
+// (Seção III.C - Trecho de substituição usado junto ao script do item a,
+//  reaproveitando o vetor de tempo, csim e plotagem já definidos anteriormente)
+
+// Planta reduzida a 5a ordem
+G = syslin('c', 0.0123*s^4 - 0.0370*s^3 + 0.1111*s^2 - 0.3333*s + 2, ...
+                s^5 + 8*s^4 + 28*s^3 + 58*s^2 + 67*s + 30);
+
+// Planta reduzida a 4a ordem
+G = syslin('c', -0.0617*s^3 + 0.1481*s^2 - 0.3333*s + 0.6667, ...
+                s^4 + 5*s^3 + 13*s^2 + 19*s + 10);
+
+// Planta reduzida a 3a ordem
+G = syslin('c', 0.2407*s^2 - 0.3333*s + 0.3333, ...
+                s^3 + 3*s^2 + 7*s + 5);

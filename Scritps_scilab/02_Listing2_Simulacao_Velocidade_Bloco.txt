@@ -1,0 +1,45 @@
+// [LISTING 2] Código em Scilab para simulação da velocidade
+// (Seção I.C - Velocidade do Bloco de Massa m)
+
+// --- Letra (c): Plotando a Velocidade ---
+// Valor de b = 240
+// 1. Definindo o espaço de estado.
+A = [0, -0.25;
+     1, -0.6];
+
+B = [0.25;
+     0.6];
+
+C = [0, 1]; // y = x2
+
+D = 0;
+sys = syslin('c', A, B, C, D);
+// Como w_n = 0.5 e zeta = 0.6, o tempo de acomodação (5%) é 10s.
+// Vamos simular de 0 a 25 segundos com passos de 0.05s
+t = 0:0.05:25;
+
+sys = syslin('c', A, B, C, D);
+
+// --- 4. Definindo o Tempo de Simulação ---
+// Como w_n = 0.5 e zeta = 0.6, o tempo de acomodação (5%) é ~10s.
+// Vamos simular de 0 a 25 segundos com passos de 0.05s para um gráfico suave.
+t = 0:0.05:25;
+
+// --- 5. Simulando a Resposta ao Degrau ---
+// A função csim nos devolve a saída (y) e a matriz de estados (x_states)
+[y, x_states] = csim('step', t, sys);
+// 2. Definimos o vetor de entrada u (degrau unitário = 1 para todo o tempo t)
+u = ones(1, length(t));
+
+// 3. Escrevemos a equação da velocidade que deduzimos no papel
+// Usamos x_states(1,:) para x1 e x_states(2,:) para x2
+v = x_states(1,:) - (b/m)*x_states(2,:) + (b/m)*u;
+
+// 4. Criamos uma nova janela gráfica e plotamos
+scf(1); // Cria a janela gráfica número 1
+plot(t, v, 'g-', "thickness", 2); // Velocidade em verde
+
+xgrid;
+title('Velocidade do Bloco de Massa m', 'fontsize', 4);
+xlabel('Tempo (segundos)', 'fontsize', 3);
+ylabel('Velocidade (m/s)', 'fontsize', 3);

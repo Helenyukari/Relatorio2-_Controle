@@ -1,0 +1,30 @@
+// [LISTING 4] Análise do LR (Compensador com Múltiplos Zeros)
+// (Seção IV.B - Projeto do Compensador via Lugar das Raízes)
+
+clc;
+clear;
+clf();
+
+// 1. Variável de Laplace e Planta Original
+s = poly(0, 's');
+den_g = s^6 + 48*s^5 + 817*s^4 + 5720*s^3 + 15075*s^2 + 27000*s + 16875;
+G = syslin('c', 1, den_g);
+
+// 2. Estrutura do Compensador sem Ganho (Múltiplos Zeros + Integrador)
+zc = 3;
+pc = 30;
+C_base = syslin('c', (s + zc)^3, s * (s + pc)^3);
+
+// 3. Malha Aberta
+MalhaAberta = G * C_base;
+
+// 4. Traçado do Lugar das Raízes
+evans(MalhaAberta, 2e8);
+
+// 5. Restrições de Projeto no Gráfico
+// beta < 40 -> zeta > cos(40 )     0.766
+zeta_min = cos(40 * %pi / 180);
+wn = 4;
+sgrid(zeta_min, wn);
+
+xtitle('Lugar das Raízes - Compensador com Múltiplos Zeros', 'Eixo Real', 'Eixo Imaginário');
