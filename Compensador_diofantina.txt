@@ -1,0 +1,25 @@
+// Compensador via Equação Diofantina - Resposta ao Degrau 
+clc; clear; clf();
+
+s = %s;
+
+// Planta original de 6a ordem
+den_g = s^6 + 48*s^5 + 817*s^4 + 5720*s^3 + 15075*s^2 + 27000*s + 16875;
+G = syslin('c', 1, den_g);
+
+// Polinomios do compensador obtidos pela Equacao Diofantina
+nc = 2.626e11*s^6 + 1.610e13*s^5 + 4.006e14*s^4 + 5.197e15*s^3 + 3.705e16*s^2 + 1.361e17*s + 2.097e17;
+dc = s*(s^5 + 360*s^4 + 57123*s^3 + 5222256*s^2 + 3.011e8*s + 1.121e10);
+C = syslin('c', nc, dc);
+
+// Malha fechada
+MalhaFechada = (C*G) /. 1;
+
+t = 0:0.01:3;
+y = csim('step', t, MalhaFechada);
+
+plot(t, y, 'b-', 'LineWidth', 2);
+plot(t, ones(1, length(t)), 'r--');
+xgrid(1);
+xtitle('Resposta ao Degrau - Compensador via Equação Diofantina', 'Tempo (s)', 'Amplitude');
+legend(['Saída y(t)'; 'Referência (Degrau)'], 4);

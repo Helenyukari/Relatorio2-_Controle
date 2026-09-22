@@ -1,0 +1,21 @@
+// Compensador de Avanço Simples - Resposta ao Degrau 
+clc; clear; clf();
+
+s = %s;
+den_g = s^6 + 48*s^5 + 817*s^4 + 5720*s^3 + 15075*s^2 + 27000*s + 16875;
+G = syslin('c', 1, den_g);
+
+// Compensador de avanço simples com integrador embutido
+K = 117113.64;
+z = 4;
+p = 9.48;
+C = syslin('c', K*(s + z), s*(s + p));
+
+MalhaFechada = (C*G) /. 1;
+
+t = 0:0.01:20;
+y = csim('step', t, MalhaFechada);
+
+plot(t, y, 'r-', 'LineWidth', 2);
+xgrid(1);
+xtitle('Resposta ao Degrau - Planta Original (z = -4, p = -9,48)', 'Tempo (s)', 'Amplitude');
